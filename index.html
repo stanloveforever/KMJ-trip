@@ -368,6 +368,18 @@
     }
 
     @media (max-width: 640px) {
+      body {
+        background-size: 100% 100%, contain;
+        background-position: center, top center;
+        background-repeat: no-repeat, no-repeat;
+        background-attachment: scroll;
+      }
+
+      body::before {
+        background: rgba(52, 34, 20, 0.10);
+        backdrop-filter: blur(0.6px);
+      }
+
       .hero h1 { font-size: 28px; }
       .day-title { font-size: 21px; }
       .time { font-size: 13px; }
@@ -455,7 +467,6 @@
         </div>
         <div class="section">
           <div class="timeline">
-            
             <div class="item">
               <div class="time">10:00–10:20</div>
               <div class="content"><div class="name">第1御鹽井停車場</div><div class="note">高千穗峽一帶的主要停車入口，先抵達可以提高停近一點的機率。這段是今天順不順的關鍵之一。</div></div>
@@ -556,7 +567,6 @@
         </div>
         <div class="section">
           <div class="timeline">
-            
             <div class="item"><div class="time">10:30–11:30</div><div class="content"><div class="name">由布釜飯「心」金鱗湖本店</div><div class="note">釜飯很適合當湯布院的第一餐，熱熱的飯香和山城氛圍很搭，也讓整趟湯布院段落更有記憶點。</div></div><a class="map-link" target="_blank" rel="noopener noreferrer" href="https://www.google.com/maps/search/?api=1&query=由布まぶし心+金鱗湖本店">地圖</a></div>
             <div class="item"><div class="time">11:35–12:10</div><div class="content"><div class="name">湯布院花卉村</div><div class="note">可愛又有童話感的小區域，適合短暫散步拍照，不需要待太久，但很有旅行氣氛。</div></div><a class="map-link" target="_blank" rel="noopener noreferrer" href="https://www.google.com/maps/search/?api=1&query=湯布院フローラルヴィレッジ">地圖</a></div>
             <div class="item"><div class="time">12:10–13:00</div><div class="content"><div class="name">湯之坪街道</div><div class="note">由布院最有代表性的散步街道，甜點、伴手禮、小店一路延伸，很適合用邊走邊看的方式感受湯布院的悠閒感。</div></div><a class="map-link" target="_blank" rel="noopener noreferrer" href="https://www.google.com/maps/search/?api=1&query=湯之坪街道">地圖</a></div>
@@ -588,7 +598,6 @@
         </div>
         <div class="section">
           <div class="timeline">
-            
             <div class="item"><div class="time">09:15–11:45</div><div class="content"><div class="name">九州自然動物園</div><div class="note">看動物與搭園區巴士的體驗很有趣，和前一天的溫泉、地獄景點完全不同，適合當作旅程中的轉場。</div></div><a class="map-link" target="_blank" rel="noopener noreferrer" href="https://www.google.com/maps/search/?api=1&query=九州自然動物園">地圖</a></div>
             <div class="item"><div class="time">12:40–13:20</div><div class="content"><div class="name">八幡奈多宮</div><div class="note">海邊神社的開闊感很特別，和山林系神社的氣氛不同，多了一點風吹海岸的清爽感。</div></div><a class="map-link" target="_blank" rel="noopener noreferrer" href="https://www.google.com/maps/search/?api=1&query=八幡奈多宮">地圖</a></div>
             <div class="item"><div class="time">15:00–15:40</div><div class="content"><div class="name">如意輪寺</div><div class="note">整體氛圍比較溫柔、靜謐，也很適合作為從海邊一路開回福岡方向時的中段停留。</div></div><a class="map-link" target="_blank" rel="noopener noreferrer" href="https://maps.app.goo.gl/SFozJjteoGxprUok6">地圖</a></div>
