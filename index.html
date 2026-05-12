@@ -146,6 +146,32 @@
       font-size: 14px;
     }
 
+    /* ✅ 達成率區塊 */
+    .progress-wrap{ margin-top: 12px; }
+    .progress-kpi{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      font-size:13px;
+      color:#4d4035;
+    }
+    .progress-kpi strong{ color:#24160f; }
+    .progress-bar{
+      margin-top: 10px;
+      height: 12px;
+      border-radius: 999px;
+      background: rgba(168,92,0,.12);
+      border: 1px solid rgba(168,92,0,.22);
+      overflow:hidden;
+    }
+    .progress-bar > div{
+      height:100%;
+      width:0%;
+      border-radius: 999px;
+      background: linear-gradient(90deg, rgba(168,92,0,.95), rgba(168,92,0,.55));
+      transition: width .25s ease;
+    }
+
     .top-actions {
       display: flex;
       gap: 10px;
@@ -181,6 +207,15 @@
       border-radius: 26px;
       box-shadow: var(--shadow);
       overflow: hidden;
+    }
+
+    /* ✅ 單日全完成：day card 外框亮 */
+    .day[data-done="true"]{
+      border-color: rgba(52,211,153,.65);
+      box-shadow: 0 18px 56px rgba(52,211,153,.12), var(--shadow);
+    }
+    .day[data-done="true"] .day-head{
+      background: linear-gradient(180deg, rgba(52,211,153,.16), #f5ede5 100%);
     }
 
     .day-head {
@@ -346,6 +381,39 @@
       display: none !important;
     }
 
+    /* ✅ item 完成亮燈 + checkbox UI */
+    .item.done {
+      background: rgba(52, 211, 153, 0.10);
+      border-radius: 14px;
+    }
+    .item.done .content .name {
+      text-decoration: line-through;
+      opacity: .78;
+    }
+    .item.done .content .note { opacity: .85; }
+
+    .done-box{
+      display:flex;
+      flex-direction:column;
+      align-items:flex-end;
+      gap:8px;
+    }
+    .done-check{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      font-size:12px;
+      color:#4d4035;
+      user-select:none;
+      cursor:pointer;
+      white-space:nowrap;
+    }
+    .done-check input{
+      width:18px;
+      height:18px;
+      accent-color: var(--accent);
+    }
+
     @media (max-width: 900px) {
       .toolbar { grid-template-columns: 1fr; }
       .day-head {
@@ -364,6 +432,9 @@
       }
       .map-link {
         width: fit-content;
+      }
+      .done-box{
+        align-items:flex-start;
       }
     }
 
@@ -397,6 +468,7 @@
         <span class="chip">可收合日期卡片</span>
         <span class="chip">含地圖按鈕</span>
         <span class="chip">含每日總開車時數</span>
+        <span class="chip">✅ 勾選完成＆達成率</span>
       </div>
     </section>
 
@@ -406,15 +478,29 @@
         <div class="top-actions">
           <button class="action-btn" id="expandAll">全部展開</button>
           <button class="action-btn" id="collapseAll">全部收合</button>
+          <button class="action-btn" id="resetDone" title="清空所有勾選（不可復原）">清空勾選</button>
         </div>
       </div>
       <div class="summary-card">
         <h3>行程摘要</h3>
         <p>這版拿掉風險標示，改成更完整的景點描寫與地圖按鈕。每天卡片都能收合，方便在手機上快速瀏覽。</p>
+
+        <!-- ✅ 達成率 -->
+        <div class="progress-wrap">
+          <div class="progress-kpi">
+            <span>完成：<strong id="doneCount">0</strong></span>
+            <span>／總數：<strong id="totalCount">0</strong></span>
+            <span>｜達成率：<strong id="donePct">0%</strong></span>
+          </div>
+          <div class="progress-bar" aria-label="達成率進度條">
+            <div id="doneBar"></div>
+          </div>
+        </div>
       </div>
     </section>
 
     <section class="days" id="daysContainer">
+      <!-- 7/12 -->
       <article class="day" data-search="7/12 熊本機場 熊本新市街光芒飯店 勝烈亭 新市街本店 下通商店街 上通商店街 熊本">
         <div class="day-head">
           <div class="day-head-left">
@@ -437,6 +523,7 @@
         </div>
       </article>
 
+      <!-- 7/13 -->
       <article class="day" data-search="7/13 第1御鹽井停車場 真名井瀑布 高千穗峽 高千穗牛燒肉 和 天安河原 上色見熊野座神社 熊野神社 三柱神社 博多牛雜鍋 德永屋 博多S-PERIA飯店 博多一雙 消夜">
         <div class="day-head">
           <div class="day-head-left">
@@ -466,7 +553,8 @@
         </div>
       </article>
 
-      <article class="day" data-search="7/14 Cafe Mutsukado LeClerc 可麗露 Dacomecca Wakaba 炸豬排若葉 鈴懸 博多本店 川端通商店街 博多運河城 LaLaport 福岡 串燒 拉麵 鳥雞研究團">
+      <!-- 7/14 -->
+      <article class="day" data-search="7/14 Cafe Mutsukado LeClerc 可麗露 Dacomecca Wakaba 炸豬排若葉 鈴懸 博多本店 川端通商店街 博多運河城 LaLaport 福岡 雞與肴 Furuya">
         <div class="day-head">
           <div class="day-head-left">
             <h2 class="day-title">7/14（二）福岡市區日</h2>
@@ -488,11 +576,13 @@
             <div class="item"><div class="time">13:30–14:30</div><div class="content"><div class="name">川端通商店街</div><div class="note">帶有老福岡氣息的商店街，比大型百貨更生活化，適合慢慢走、看看街景與小店。</div></div><a class="map-link" target="_blank" rel="noopener noreferrer" href="https://www.google.com/maps/search/?api=1&query=川端通商店街">地圖</a></div>
             <div class="item"><div class="time">14:30–17:30</div><div class="content"><div class="name">博多運河城</div><div class="note">大型複合商場，若想補買東西或吹冷氣稍作休息，這裡很適合。整體感覺比較熱鬧、城市感更強。</div></div><a class="map-link" target="_blank" rel="noopener noreferrer" href="https://www.google.com/maps/search/?api=1&query=博多運河城">地圖</a></div>
             <div class="item"><div class="time">18:00–21:00</div><div class="content"><div class="name">LaLaport 福岡</div><div class="note">下午轉往大型商場，整體逛起來比市中心更寬鬆，若有購物需求，這段時間留在這裡很適合。</div></div><a class="map-link" target="_blank" rel="noopener noreferrer" href="https://www.google.com/maps/search/?api=1&query=LaLaport+Fukuoka">地圖</a></div>
-            <div class="item"><div class="time">21:30–23:00</div><div class="content"><div class="name">雞與肴 Furuya(6/1預約)</div><div class="note">福岡夜晚就用「雞與肴 Furuya」收尾：串燒配小料理、氣氛輕鬆很日常，吃得滿足又不會太有壓力。</div></div><a class="map-link" target="_blank" rel="noopener noreferrer"href="https://www.google.com/maps/search/?api=1&query=%E9%9B%9E%E3%81%A8%E8%82%B4%20Furuya%20%E7%A6%8F%E5%B2%A1">地圖</a></div>
+            <div class="item"><div class="time">21:30–23:00</div><div class="content"><div class="name">雞與肴 Furuya(6/1預約)</div><div class="note">福岡夜晚就用「雞與肴 Furuya」收尾：串燒配小料理、氣氛輕鬆很日常，吃得滿足又不會太有壓力。</div></div><a class="map-link" target="_blank" rel="noopener noreferrer" href="https://www.google.com/maps/search/?api=1&query=%E9%9B%9E%E3%81%A8%E8%82%B4%20Furuya%20%E7%A6%8F%E5%B2%A1">地圖</a></div>
+          </div>
         </div>
       </article>
 
-      <article class="day" data-search="7/15 由布釜飯 心 金鱗湖本店 湯布院花卉村 湯之坪街道 Nakatsu 炸雞 鞠智 cucuchi 由布院 Milch 蛋糕卷 B SPEAK 本店 地獄蒸布丁 岡本屋 海地獄 鬼石坊主地獄 血池地獄 東洋軒 TOKIWA別府店 龜之井酒店 别府">
+      <!-- 7/15 -->
+      <article class="day" data-search="7/15 由布釜飯 心 金鱗湖本店 湯布院花卉村 湯之坪街道 Nakatsu 炸雞 鞠智 cucuchi 由布院 Milch 蛋糕卷 B SPEAK 本店 地獄蒸布丁 岡本屋 海地獄 鬼石坊主地獄 血池地獄 東洋軒 TOKIWA別府店 龜之井酒店 別府">
         <div class="day-head">
           <div class="day-head-left">
             <h2 class="day-title">7/15（三）福岡 → 湯布院 → 別府</h2>
@@ -518,13 +608,14 @@
             <div class="item"><div class="time">16:25–16:45</div><div class="content"><div class="name">鬼石坊主地獄</div><div class="note">泥漿翻滾的景象和海地獄完全不同，視覺變化很有趣，能讓別府段落不只是看同一種景色。</div></div><a class="map-link" target="_blank" rel="noopener noreferrer" href="https://www.google.com/maps/search/?api=1&query=鬼石坊主地獄">地圖</a></div>
             <div class="item"><div class="time">17:00–17:20</div><div class="content"><div class="name">血池地獄</div><div class="note">色澤強烈、辨識度很高，是別府地獄巡禮裡很適合作為壓軸的一站。</div></div><a class="map-link" target="_blank" rel="noopener noreferrer" href="https://www.google.com/maps/search/?api=1&query=血池地獄">地圖</a></div>
             <div class="item"><div class="time">17:30–18:30</div><div class="content"><div class="name">八幡奈多宮</div><div class="note">海邊神社的開闊感很特別，和山林系神社的氣氛不同，多了一點風吹海岸的清爽感。</div></div><a class="map-link" target="_blank" rel="noopener noreferrer" href="https://www.google.com/maps/search/?api=1&query=八幡奈多宮">地圖</a></div>
-            <div class="item"><div class="time">19:00</div><div class="content"><div class="name">龜之井酒店 別府 check-in</div><div class="note">結束今天的移動後，回飯店放鬆，隔天再進入新的長距離行程。</div></div><a class="map-link" target="_blank" rel="noopener noreferrer" href="https://www.google.com/maps/search/?api=1&query=龜之井酒店+別府">地圖</a></div>
+            <div class="item"><div class="time">19:00</div><div class="content"><div class="name">龜之井酒店 別府 check-in</div><div class="note">結束今天的移動後，回飯店放鬆，隔天再進入新的長距離行程。</div></div><a class="map-link" target="_blank" rel="noopener noreferrer" href="https://www.google.com/maps/search/?api=1&query=龜之井ホテル+別府">地圖</a></div>
             <div class="item"><div class="time">20:00–21:30</div><div class="content"><div class="name">焼肉元相 本店(已預約20:00)</div><div class="note">晚上用一頓燒肉替別府段落收尾，熱騰騰的肉香和一天的溫泉地景很搭，也讓這晚多了一點滿足感。</div></div><a class="map-link" target="_blank" rel="noopener noreferrer" href="https://www.google.com/maps/search/?api=1&query=%E7%84%BC%E8%82%89%E5%85%83%E7%9B%B8%20%E6%9C%AC%E5%BA%97">地圖</a></div>
           </div>
         </div>
       </article>
 
-      <article class="day" data-search="7/16 九州自然動物園 八幡奈多宮 如意輪寺 鳥栖PREMIUM OUTLETS 博多水炊鍋専門 橙 MYSTAYS 福岡天神南酒店 Kawaya Gion 烤雞皮居酒屋 消夜">
+      <!-- 7/16 -->
+      <article class="day" data-search="7/16 九州自然動物園 東洋軒 如意輪寺 鳥栖PREMIUM OUTLETS 博多水炊鍋専門 橙 MYSTAYS 福岡天神南酒店 Kawaya Gion 烤雞皮居酒屋 消夜">
         <div class="day-head">
           <div class="day-head-left">
             <h2 class="day-title">7/16（四）別府 → 大分北部 → 鳥栖 → 福岡</h2>
@@ -538,7 +629,7 @@
         </div>
         <div class="section">
           <div class="timeline">
-            <div class="item"><div class="time">09:00–11:45</div><div class="content"><div class="name">九州自然動物園</div><div class="note">看動物與搭園區巴士的體驗很有趣，和前一天的溫泉、地獄景點完全不同，適合當作旅程中的轉場。</div></div><a class="map-link" target="_blank" rel="noopener noreferrer" href="https://www.google.com/maps/search/?api=1&query=九州自然動物園">地圖</a></div>
+            <div class="item"><div class="time">09:00–11:45</div><div class="content"><div class="name">九州自然動物園</div><div class="note">看動物與搭園區巴士的體驗很有趣，和前一天的溫泉、地獄景點完全不同，適合當作旅程中的轉場。</div></div><a class="map-link" target="_blank" rel="noopener noreferrer" href="https://www.google.com/maps/search/?api=1&query=九州自然動物公園">地圖</a></div>
             <div class="item"><div class="time">12:10–13:10</div><div class="content"><div class="name">東洋軒 TOKIWA別府店</div><div class="note">別府很有代表性的洋食老店，放在動物園後當午餐剛剛好，也能讓中午這段多一點坐下來好好吃飯的餘裕。</div></div><a class="map-link" target="_blank" rel="noopener noreferrer" href="https://www.google.com/maps/search/?api=1&query=東洋軒+TOKIWA別府店">地圖</a></div>
             <div class="item"><div class="time">13:20–15:00</div><div class="content"><div class="name">如意輪寺</div><div class="note">整體氛圍比較溫柔、靜謐，也很適合作為從海邊一路開回福岡方向時的中段停留。</div></div><a class="map-link" target="_blank" rel="noopener noreferrer" href="https://maps.app.goo.gl/SFozJjteoGxprUok6">地圖</a></div>
             <div class="item"><div class="time">15:30–19:30</div><div class="content"><div class="name">鳥栖 PREMIUM OUTLETS</div><div class="note">這裡是今天唯一偏購物型的段落，適合抓重點逛，不然很容易把晚餐時間往後擠。</div></div><a class="map-link" target="_blank" rel="noopener noreferrer" href="https://www.google.com/maps/search/?api=1&query=鳥栖+Premium+Outlets">地圖</a></div>
@@ -549,6 +640,7 @@
         </div>
       </article>
 
+      <!-- 7/17 -->
       <article class="day" data-search="7/17 葫蘆壽司 天神地下街 SEAM シーム 天神大名 水果派 Qu'il fait bon 太宰府天滿宮 燒肉 泰元">
         <div class="day-head">
           <div class="day-head-left">
@@ -564,15 +656,16 @@
         <div class="section">
           <div class="timeline">
             <div class="item"><div class="time">10:00–10:30</div><div class="content"><div class="name">SEAM【シーム】天神大名</div><div class="note">大名一帶本來就很適合散步，SEAM 這站能讓整天多一點咖啡與選物感，氣質很不一樣。</div></div><a class="map-link" target="_blank" rel="noopener noreferrer" href="https://www.google.com/maps/search/?api=1&query=SEAM+天神大名">地圖</a></div>
-            <div class="item"><div class="time">11:00–12:30</div><div class="content"><div class="name">葫蘆壽司</div><div class="note">午餐從壽司開始，節奏比較清爽，也很適合作為市區散步日的第一餐。</div></div><a class="map-link" target="_blank" rel="noopener noreferrer" href="https://www.google.com/maps/search/?api=1&query=葫蘆壽司+福岡">地圖</a></div>
-            <div class="item"><div class="time">12:30–13:00</div><div class="content"><div class="name">水果派 Qu'il fait bon</div><div class="note">色彩漂亮的水果塔很有幸福感，安排在白天中段當甜點休息很剛好，也很適合拍照。</div></div><a class="map-link" target="_blank" rel="noopener noreferrer" href="https://www.google.com/maps/search/?api=1&query=Quil+fait+bon+福岡">地圖</a></div>
-            <div class="item"><div class="time">13:30–16:30</div><div class="content"><div class="name">太宰府天滿宮</div><div class="note">作為福岡經典參拜地，整體莊嚴又不失觀光感，散步、參拜、買小點心都很合適，下午前往也比較輕鬆。</div></div><a class="map-link" target="_blank" rel="noopener noreferrer" href="https://www.google.com/maps/search/?api=1&query=太宰府天滿宮">地圖</a></div>
+            <div class="item"><div class="time">11:00–12:30</div><div class="content"><div class="name">葫蘆壽司</div><div class="note">午餐從壽司開始，節奏比較清爽，也很適合作為市區散步日的第一餐。</div></div><a class="map-link" target="_blank" rel="noopener noreferrer" href="https://www.google.com/maps/search/?api=1&query=葫蘆寿司+福岡">地圖</a></div>
+            <div class="item"><div class="time">12:30–13:00</div><div class="content"><div class="name">水果派 Qu'il fait bon</div><div class="note">色彩漂亮的水果塔很有幸福感，安排在白天中段當甜點休息很剛好，也很適合拍照。</div></div><a class="map-link" target="_blank" rel="noopener noreferrer" href="https://www.google.com/maps/search/?api=1&query=Qu%27il+fait+bon+福岡">地圖</a></div>
+            <div class="item"><div class="time">13:30–16:30</div><div class="content"><div class="name">太宰府天滿宮</div><div class="note">作為福岡經典參拜地，整體莊嚴又不失觀光感，散步、參拜、買小點心都很合適，下午前往也比較輕鬆。</div></div><a class="map-link" target="_blank" rel="noopener noreferrer" href="https://www.google.com/maps/search/?api=1&query=太宰府天満宮">地圖</a></div>
             <div class="item"><div class="time">16:30–19:30</div><div class="content"><div class="name">天神地下街</div><div class="note">福岡市區非常好逛的地底街區，整體環境舒適，也適合天氣熱時慢慢走。</div></div><a class="map-link" target="_blank" rel="noopener noreferrer" href="https://www.google.com/maps/search/?api=1&query=天神地下街">地圖</a></div>
-            <div class="item"><div class="time">20:00–21:30</div><div class="content"><div class="name">燒肉 泰元(已預約20:00)</div><div class="note">晚上用一頓燒肉把今天收尾，很有滿足感，也很適合當作福岡市區日的正式晚餐。</div></div><a class="map-link" target="_blank" rel="noopener noreferrer" href="https://www.google.com/maps/search/?api=1&query=燒肉+泰元+福岡">地圖</a></div>
+            <div class="item"><div class="time">20:00–21:30</div><div class="content"><div class="name">燒肉 泰元(已預約20:00)</div><div class="note">晚上用一頓燒肉把今天收尾，很有滿足感，也很適合當作福岡市區日的正式晚餐。</div></div><a class="map-link" target="_blank" rel="noopener noreferrer" href="https://www.google.com/maps/search/?api=1&query=焼肉+泰元+福岡">地圖</a></div>
           </div>
         </div>
       </article>
 
+      <!-- 7/18 -->
       <article class="day" data-search="7/18 The Full Full Hakata 麵包 麵道Hanamokoshi Palm Tree Swing 棕櫚樹鞦韆 Angel's wing photo spot 天使之翼 Futamigaura 海鮮午餐 海中大鳥居 二見ヶ浦 夫婦岩前 櫻井神社 Beach Cafe SUNSET 日落海景小屋 熊本城景觀舒適公寓飯店">
         <div class="day-head">
           <div class="day-head-left">
@@ -601,6 +694,7 @@
         </div>
       </article>
 
+      <!-- 7/19 -->
       <article class="day" data-search="7/19 熊本城 山見茶屋 櫻之馬場 城彩苑 海賊王 魯夫雕像 吉貝爾雕像 熊本熊港八代 熊本機場 還車">
         <div class="day-head">
           <div class="day-head-left">
@@ -616,9 +710,9 @@
         <div class="section">
           <div class="timeline">
             <div class="item"><div class="time">09:00–10:10</div><div class="content"><div class="name">熊本城</div><div class="note">最後一天從熊本最代表性的地標開始，很有收尾感。白天進場看城郭與修復後的樣貌，也很適合當這趟熊本段的正式告別。</div></div><a class="map-link" target="_blank" rel="noopener noreferrer" href="https://www.google.com/maps/search/?api=1&query=熊本城">地圖</a></div>
-            <div class="item"><div class="time">10:15–11:00</div><div class="content"><div class="name">櫻之馬場 城彩苑</div><div class="note">城下町風格的商店與小吃集中區，適合順著熊本城一起逛，氣氛也比較悠閒。</div></div><a class="map-link" target="_blank" rel="noopener noreferrer" href="https://www.google.com/maps/search/?api=1&query=櫻之馬場+城彩苑">地圖</a></div>
+            <div class="item"><div class="time">10:15–11:00</div><div class="content"><div class="name">櫻之馬場 城彩苑</div><div class="note">城下町風格的商店與小吃集中區，適合順著熊本城一起逛，氣氛也比較悠閒。</div></div><a class="map-link" target="_blank" rel="noopener noreferrer" href="https://www.google.com/maps/search/?api=1&query=櫻の馬場+城彩苑">地圖</a></div>
             <div class="item"><div class="time">11:05–11:45</div><div class="content"><div class="name">山見茶屋</div><div class="note">在城市行程裡插入一段比較靜的用餐或休息時光，讓最後一天不會太趕太硬。</div></div><a class="map-link" target="_blank" rel="noopener noreferrer" href="https://www.google.com/maps/search/?api=1&query=山見茶屋+熊本">地圖</a></div>
-            <div class="item"><div class="time">12:00–12:20</div><div class="content"><div class="name">海賊王 魯夫雕像</div><div class="note">航海王雕像計畫裡非常有代表性的一尊，短停拍照就很夠，也很適合作為熊本市區最後一個亮點。</div></div><a class="map-link" target="_blank" rel="noopener noreferrer" href="https://www.google.com/maps/search/?api=1&query=魯夫雕像+熊本">地圖</a></div>
+            <div class="item"><div class="time">12:00–12:20</div><div class="content"><div class="name">海賊王 魯夫雕像</div><div class="note">航海王雕像計畫裡非常有代表性的一尊，短停拍照就很夠，也很適合作為熊本市區最後一個亮點。</div></div><a class="map-link" target="_blank" rel="noopener noreferrer" href="https://www.google.com/maps/search/?api=1&query=ルフィ像+熊本">地圖</a></div>
             <div class="item"><div class="time">13:00–13:20</div><div class="content"><div class="name">吉貝爾雕像</div><div class="note">這尊在宇土市住吉海岸公園，位置不在八代，屬於今天特別加進來的一站，所以停留建議精準一點。</div></div><a class="map-link" target="_blank" rel="noopener noreferrer" href="https://www.google.com/maps/search/?api=1&query=ジンベエ像+宇土市住吉海岸公園">地圖</a></div>
             <div class="item"><div class="time">14:00–14:40</div><div class="content"><div class="name">熊本熊港八代</div><div class="note">港邊空間很開闊，有很多熊本熊元素，作為最後一個主要景點很有旅行尾聲的輕鬆感。</div></div><a class="map-link" target="_blank" rel="noopener noreferrer" href="https://www.google.com/maps/search/?api=1&query=熊本熊港八代">地圖</a></div>
             <div class="item"><div class="time">16:40</div><div class="content"><div class="name">熊本機場</div><div class="note">最後回到機場，準備辦理登機手續，替這趟九州之旅畫下句點。</div></div><a class="map-link" target="_blank" rel="noopener noreferrer" href="https://www.google.com/maps/search/?api=1&query=Kumamoto+Airport">地圖</a></div>
@@ -637,6 +731,7 @@
     const dayCards = Array.from(document.querySelectorAll('.day'));
     const expandAllBtn = document.getElementById('expandAll');
     const collapseAllBtn = document.getElementById('collapseAll');
+    const resetDoneBtn = document.getElementById('resetDone');
 
     input.addEventListener('input', function () {
       const keyword = this.value.trim().toLowerCase();
@@ -661,6 +756,132 @@
     collapseAllBtn.addEventListener('click', () => {
       dayCards.forEach(card => card.classList.add('collapsed'));
     });
+
+    // ✅ 勾選完成 + 達成率 + 記憶（localStorage）
+    const DONE_KEY = "kyushu_trip_done_v1";
+    const doneSet = new Set(JSON.parse(localStorage.getItem(DONE_KEY) || "[]"));
+
+    function makeItemKey(dayTitle, timeText, nameText){
+      return `${dayTitle}__${timeText}__${nameText}`.replace(/\s+/g, " ").trim();
+    }
+
+    function saveDone(){
+      localStorage.setItem(DONE_KEY, JSON.stringify([...doneSet]));
+    }
+
+    function updateProgressAndDayDone(){
+      const days = Array.from(document.querySelectorAll(".day"));
+      let total = 0;
+      let done = 0;
+
+      days.forEach(day => {
+        const dayTitle = (day.querySelector(".day-title")?.textContent || "").trim();
+        const items = Array.from(day.querySelectorAll(".item"));
+
+        let dayTotal = 0;
+        let dayDone = 0;
+
+        items.forEach(it => {
+          const timeText = (it.querySelector(".time")?.textContent || "—").trim();
+          const nameText = (it.querySelector(".content .name")?.textContent || "").trim();
+          if(!nameText) return;
+
+          dayTotal += 1;
+          total += 1;
+
+          const key = makeItemKey(dayTitle, timeText, nameText);
+          if(doneSet.has(key)){
+            dayDone += 1;
+            done += 1;
+          }
+        });
+
+        day.dataset.done = (dayTotal > 0 && dayDone === dayTotal) ? "true" : "false";
+      });
+
+      const pct = total ? Math.round((done / total) * 100) : 0;
+      const doneCountEl = document.getElementById("doneCount");
+      const totalCountEl = document.getElementById("totalCount");
+      const donePctEl = document.getElementById("donePct");
+      const doneBarEl = document.getElementById("doneBar");
+
+      if(doneCountEl) doneCountEl.textContent = done;
+      if(totalCountEl) totalCountEl.textContent = total;
+      if(donePctEl) donePctEl.textContent = `${pct}%`;
+      if(doneBarEl) doneBarEl.style.width = `${pct}%`;
+    }
+
+    function injectCheckboxes(){
+      const days = Array.from(document.querySelectorAll(".day"));
+
+      days.forEach(day => {
+        const dayTitle = (day.querySelector(".day-title")?.textContent || "").trim();
+        const items = Array.from(day.querySelectorAll(".item"));
+
+        items.forEach(it => {
+          const timeText = (it.querySelector(".time")?.textContent || "—").trim();
+          const nameEl = it.querySelector(".content .name");
+          if(!nameEl) return;
+
+          const nameText = nameEl.textContent.trim();
+          const key = makeItemKey(dayTitle, timeText, nameText);
+
+          // 避免重複插入
+          if(it.querySelector("[data-done-ui]")) return;
+
+          // 找到地圖按鈕，改成「地圖 + 勾選」同一欄
+          const map = it.querySelector(".map-link");
+          const box = document.createElement("div");
+          box.className = "done-box";
+          box.setAttribute("data-done-ui", "1");
+
+          if(map){
+            box.appendChild(map); // move node
+          }
+
+          const label = document.createElement("label");
+          label.className = "done-check";
+          label.title = "勾選完成（會自動保存）";
+          label.innerHTML = `<input type="checkbox"> 完成`;
+
+          const checkbox = label.querySelector("input");
+          checkbox.checked = doneSet.has(key);
+
+          if(checkbox.checked) it.classList.add("done");
+
+          checkbox.addEventListener("change", () => {
+            if(checkbox.checked){
+              doneSet.add(key);
+              it.classList.add("done");
+            }else{
+              doneSet.delete(key);
+              it.classList.remove("done");
+            }
+            saveDone();
+            updateProgressAndDayDone();
+          });
+
+          box.appendChild(label);
+          it.appendChild(box);
+        });
+      });
+
+      updateProgressAndDayDone();
+    }
+
+    resetDoneBtn.addEventListener("click", () => {
+      const ok = confirm("確定要清空所有勾選嗎？（不可復原）");
+      if(!ok) return;
+      doneSet.clear();
+      saveDone();
+
+      document.querySelectorAll(".item.done").forEach(it => it.classList.remove("done"));
+      document.querySelectorAll(".done-check input[type='checkbox']").forEach(cb => cb.checked = false);
+
+      updateProgressAndDayDone();
+    });
+
+    injectCheckboxes();
   </script>
 </body>
 </html>
